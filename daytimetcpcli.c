@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -19,50 +20,52 @@ int main(const int argc, const char *argv[])
 	struct sockaddr_in servaddr;
 
 
-	if(2!=argc)
+	if(2 != argc)
 	{
-		printf("usage: a.out <IPaddress>\n");
+		printf("Usage: a.out <IPaddress>\n");
 		return -1;
 	}
 	
 	if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
-		printf("socket errors, ret: %d\n", sockfd);
+		printf("[Socket Error]==errno: %d, reason: %s\n", errno, strerror(errno));
 		return -1;
 	}
 	
 	bzero(&servaddr, sizeof(servaddr));
 	
 	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htonl(8000);
-	#if 0
+	servaddr.sin_port = htons(631);
+	printf("%s\n", argv[1]);
+#if 1
 	if((ret = inet_pton(AF_INET, argv[1], &servaddr.sin_addr)) < 0)
 	{
-		printf("connect error, ret: %d\n", ret);
+		printf("[Connect error]==errno: %d, reason: %s\n", errno, strerror(errno));
 		return -1;
 	}
-	#endif
+#else
 	servaddr.sin_addr.s_addr = inet_addr(argv[1]);
-
+#endif
 	if((ret = connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr))) < 0)
 	{
-		printf("connect error, ret: %d\n", ret);
-		//return -1;
+		printf("[Connect error]==errno: %d, reason: %s\n", errno, strerror(errno));
+		return -1;
 	}
 
-	while ((n = read(sockfd, recvline, MAXLINE)) > 0)
+	while ((n = read(sockfd, recvline, MAXLINE)) >= 0)
 	{
+		printf("reading...\n");
 		recvline[0] = 0;
 		if (fputs(recvline, stdout) == EOF)
 		{
-			printf("fputs error!");
+			printf("fputs error!\n");
 			return -1;
 		}
 	}
 
 	if (n < 0)
 	{
-		printf("read error");
+		printf("[Read Error]:==errno: %d, reason: %s\n", errno, strerror(errno));
 	}
 
 	
