@@ -9,7 +9,7 @@
 #include <arpa/inet.h>
 //#include <netinet/sctp.h>
 
-#define MAXLINE 20
+#define MAXLINE 200
 #define bzero(ptr, n) memset(ptr, 0, n)
 
 int main(const int argc, const char *argv[])
@@ -31,11 +31,11 @@ int main(const int argc, const char *argv[])
 		printf("[Socket Error]==errno: %d, reason: %s\n", errno, strerror(errno));
 		return -1;
 	}
-	
+	//ret = argc, printf("hello\n");
 	bzero(&servaddr, sizeof(servaddr));
 	
 	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(631);
+	servaddr.sin_port = htons(11300);
 	printf("%s\n", argv[1]);
 #if 1
 	if((ret = inet_pton(AF_INET, argv[1], &servaddr.sin_addr)) < 0)
@@ -51,11 +51,10 @@ int main(const int argc, const char *argv[])
 		printf("[Connect error]==errno: %d, reason: %s\n", errno, strerror(errno));
 		return -1;
 	}
-
+	
+	recvline[0] = 0;
 	while ((n = read(sockfd, recvline, MAXLINE)) >= 0)
 	{
-		printf("reading...\n");
-		recvline[0] = 0;
 		if (fputs(recvline, stdout) == EOF)
 		{
 			printf("fputs error!\n");
