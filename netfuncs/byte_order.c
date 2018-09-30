@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 #undef CPU_VENDOR_OS
 #define CPU_VENDOR_OS "$host"
@@ -33,6 +34,6 @@ int main(const int argc, const char *argv[])
 	{
 		printf("sizeof(short)=%lu\n", sizeof(short));
 	}
-
+	printf("sizeof(short)=%lu\n", sizeof(short));
     return 0;
 }
