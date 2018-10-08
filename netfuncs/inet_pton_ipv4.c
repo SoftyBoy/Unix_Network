@@ -38,7 +38,7 @@ const char *inet_ntop(int family, const void *addrptr, char *strptr, size_t len)
 		{
 			errno = ENOSPC;
 			return strptr;
-		}
+		} 
 	}
 	errno = EAFNOSUPPORT;
 	return (NULL);
